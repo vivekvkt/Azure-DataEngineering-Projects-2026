@@ -1,0 +1,25 @@
+name: 'ecommerce_dbt'
+
+version: '1.0'
+
+config-version: 2
+
+profile: 'ecommerce_dbt'
+
+model-paths: ["models"]
+
+models:
+
+  ecommerce_dbt:
+
+    staging:
+      +materialized: view
+
+    dimensions:
+      +materialized: table
+
+    facts:
+      +materialized: table
+
+    marts:
+      +materialized: table

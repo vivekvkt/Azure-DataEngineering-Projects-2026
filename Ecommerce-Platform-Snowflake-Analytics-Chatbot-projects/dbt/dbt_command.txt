@@ -1,0 +1,39 @@
+Run in dbt Cloud or local:
+
+dbt debug
+dbt run
+dbt test
+dbt build
+dbt docs generate
+dbt docs serve
+
+
+Resulting Lineage
+CUSTOMER_REVENUE
+       │
+       ▼
+stg_customer_revenue
+       │
+       ▼
+dim_customer
+       │
+       ▼
+fct_revenue
+       │
+       ▼
+mart_dashboard
+
+
+PRODUCT_SALES
+       │
+       ▼
+stg_product_sales
+       │
+       ▼
+dim_product
+
+
+DAILY_REVENUE
+       │
+       ▼
+stg_daily_revenue

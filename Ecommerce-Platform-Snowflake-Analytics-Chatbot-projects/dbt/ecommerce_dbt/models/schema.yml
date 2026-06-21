@@ -1,0 +1,19 @@
+version: 2
+
+models:
+
+  - name: dim_customer
+
+    description: Customer Dimension
+
+  - name: dim_product
+
+    description: Product Dimension
+
+  - name: fct_revenue
+
+    description: Revenue Fact Table
+
+  - name: mart_dashboard
+
+    description: Power BI Dashboard Mart

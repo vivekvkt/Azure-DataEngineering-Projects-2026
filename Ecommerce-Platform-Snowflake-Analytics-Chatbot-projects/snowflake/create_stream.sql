@@ -1,0 +1,2 @@
+CREATE STREAM customer_revenue_stream
+ON TABLE CUSTOMER_REVENUE;

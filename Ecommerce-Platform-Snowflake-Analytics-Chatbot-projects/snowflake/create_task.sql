@@ -1,0 +1,12 @@
+CREATE TASK refresh_dashboard
+
+WAREHOUSE = COMPUTE_WH
+
+SCHEDULE = '5 MINUTE'
+
+AS
+
+INSERT INTO DASHBOARD_TABLE
+
+SELECT *
+FROM customer_revenue_stream;

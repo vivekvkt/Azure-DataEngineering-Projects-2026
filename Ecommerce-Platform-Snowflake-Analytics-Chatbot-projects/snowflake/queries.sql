@@ -1,0 +1,81 @@
+use database ECOMMERCE_DB;
+
+select * from CUSTOMER_REVENUE_V2;
+select * from  PRODUCT_SALES_V2;
+select * from  DAILY_REVENUE_V2;
+
+SELECT *
+FROM dbt_dev.MART_DASHBOARD
+LIMIT 2;
+
+
+SELECT *
+FROM DBT_DEV.DIM_CUSTOMER
+LIMIT 4;
+
+SELECT *
+FROM DBT_DEV.DIM_PRODUCT
+LIMIT 4;
+
+SELECT *
+FROM DBT_DEV.FCT_REVENUE
+LIMIT 4;
+
+
+-- ai mart dashboard
+CREATE OR REPLACE TABLE SALES_ANALYTICS (
+    ORDER_ID NUMBER,
+    ORDER_DATE DATE,
+    CUSTOMER_ID NUMBER,
+    CUSTOMER_NAME STRING,
+    CITY STRING,
+    COUNTRY STRING,
+    PRODUCT_ID STRING,
+    PRODUCT_NAME STRING,
+    CATEGORY STRING,
+    QUANTITY NUMBER,
+    TOTAL_AMOUNT NUMBER(10,2),
+    PAYMENT_METHOD STRING,
+    PAYMENT_STATUS STRING
+);
+
+SHOW TABLES LIKE 'SALES_ANALYTICS';
+
+SELECT *
+FROM DBT_DEV.MART_AI_DASHBOARD
+LIMIT 10;
+
+select * from sales_analytics
+
+SELECT COUNT(*)
+FROM ECOMMERCE_DB.PUBLIC.SALES_ANALYTICS;
+
+
+
+CREATE OR REPLACE TABLE DBT_DEV.MART_AI_DASHBOARD AS
+SELECT
+SEQ4() + 1000 AS ORDER_ID,
+DATEADD(
+    DAY,
+    UNIFORM(0,364,RANDOM()),
+    TO_DATE('2024-01-01')
+) AS ORDER_DATE,
+
+UNIFORM(1,100,RANDOM()) AS CUSTOMER_ID,
+
+ARRAY_CONSTRUCT(
+    'Rahul Sharma','Priya Singh','Amit Kumar','Neha Verma',
+    'Vivek Tiwari','Anjali Gupta','Rohit Agarwal','Pooja Mishra',
+    'Sandeep Yadav','Kavita Sharma','Arjun Patel','Payal Verma',
+    'Deepak Singh','Shreya Gupta','Abhishek Kumar','Nidhi Sharma',
+    'Rakesh Jain','Sneha Patel','Manish Verma','Swati Singh'
+)[UNIFORM(0,19,RANDOM())]::STRING AS CUSTOMER_NAME,
+
+ARRAY_CONSTRUCT(
+    'Delhi','Mumbai','Bangalore','Hyderabad',
+    'Chennai','Pune','Kolkata','Noida'
+)[UNIFORM(0,7,RANDOM())]::STRING AS CITY,
+
+'India' AS COUNTRY,
+
+UNIFORM(101,120,RANDOM()) AS PRODUCT_ID,
