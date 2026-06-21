@@ -1,0 +1,1 @@
+SELECT * FROM {{ source('ecommerce', 'PRODUCT_SALES') }}

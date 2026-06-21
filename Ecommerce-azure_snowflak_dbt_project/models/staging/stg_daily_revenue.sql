@@ -1,0 +1,1 @@
+SELECT * FROM {{ source('ecommerce', 'DAILY_REVENUE') }}

@@ -1,0 +1,21 @@
+payment_id,order_id,payment_date,payment_method,payment_status,amount
+5001,1001,2024-06-01,Credit Card,Completed,65000
+5002,1002,2024-06-01,UPI,Completed,50000
+5003,1003,2024-06-02,Debit Card,Completed,9000
+5004,1004,2024-06-02,UPI,Completed,2400
+5005,1005,2024-06-03,Net Banking,Completed,4000
+5006,1006,2024-06-03,Credit Card,Completed,15000
+5007,1007,2024-06-04,UPI,Pending,12000
+5008,1008,2024-06-04,Debit Card,Completed,60000
+5009,1009,2024-06-05,Credit Card,Failed,7000
+5010,1010,2024-06-05,UPI,Completed,9000
+5011,1011,2024-06-06,Net Banking,Completed,8000
+5012,1012,2024-06-06,Credit Card,Completed,12000
+5013,1013,2024-06-07,UPI,Completed,12000
+5014,1014,2024-06-07,Debit Card,Completed,35000
+5015,1015,2024-06-08,Credit Card,Completed,21000
+5016,1016,2024-06-08,UPI,Pending,40000
+5017,1017,2024-06-09,Net Banking,Completed,25000
+5018,1018,2024-06-09,Credit Card,Completed,30000
+5019,1019,2024-06-10,UPI,Failed,10000
+5020,1020,2024-06-10,Debit Card,Completed,6000

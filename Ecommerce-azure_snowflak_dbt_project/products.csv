@@ -1,0 +1,21 @@
+product_id,product_name,category,price,stock_quantity
+101,Laptop,Electronics,65000,50
+102,Mobile,Electronics,25000,100
+103,Headphones,Electronics,3000,150
+104,Keyboard,Electronics,1200,200
+105,Mouse,Electronics,800,250
+106,Monitor,Electronics,15000,75
+107,Printer,Electronics,12000,40
+108,Tablet,Electronics,30000,60
+109,Smart Watch,Electronics,7000,90
+110,Speaker,Electronics,4500,80
+111,Office Chair,Furniture,8000,35
+112,Desk,Furniture,12000,25
+113,Bookshelf,Furniture,6000,30
+114,Sofa,Furniture,35000,15
+115,Coffee Table,Furniture,7000,20
+116,Bed,Furniture,40000,10
+117,Wardrobe,Furniture,25000,12
+118,Dining Table,Furniture,30000,8
+119,Study Table,Furniture,5000,22
+120,Lamp,Furniture,1500,50
