@@ -1,5 +1,9 @@
 # 🚀 E-Commerce Analytics Chatbot Project
 
+<p align="center">
+  <img src="https://github.com/vivekvkt/Azure-DataEngineering-Projects-2026/blob/main/Ecommerce-Platform-Snowflake-Analytics-Chatbot-projects/powerBIDahboard.PNG" width="900">
+</p>
+
 ## 📌 Project Overview
 
 This project demonstrates an end-to-end Data Engineering and Analytics platform using Azure Data Lake Storage Gen2 (ADLS), Azure Databricks, Snowflake, dbt, Apache Airflow, Python, and Streamlit.
