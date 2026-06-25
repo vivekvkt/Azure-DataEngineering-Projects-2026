@@ -1,0 +1,103 @@
+If profiles.yml is configured, the next step is to verify that dbt can connect to Snowflake.
+
+Step 1: Enter the Airflow Scheduler Container
+docker exec -it airflow-docker-airflow-scheduler-1 bash
+Step 2: Go to the dbt Project Folder
+
+Example:
+
+cd /opt/airflow/dbt_insurance
+
+Check files:
+
+ls
+
+You should see:
+
+dbt_project.yml
+profiles.yml
+models/
+Step 3: Verify dbt Installation
+dbt --version
+
+Expected:
+
+Core:
+  - installed: 1.x.x
+
+If dbt: command not found, we need to install dbt first.
+
+Step 4: Test Snowflake Connection
+dbt debug
+
+Expected output:
+
+Connection test: OK connection ok
+All checks passed!
+If dbt debug Fails
+
+Send me the complete output of:
+
+dbt debug
+
+and I'll help fix it.
+
+After dbt debug Passes
+
+Run:
+
+dbt parse
+
+Then:
+
+dbt run
+
+At that point dbt will start creating:
+
+SILVER.DIM_CUSTOMERS
+SILVER.DIM_AGENTS
+SILVER.DIM_POLICIES
+SILVER.FCT_CLAIMS
+
+GOLD.CLAIM_SUMMARY
+GOLD.REVENUE_KPIS
+GOLD.AGENT_PERFORMANCE
+GOLD.FRAUD_ANALYTICS
+
+from your Bronze tables automatically.
+
+Run these commands and share:
+
+dbt --version
+dbt debug
+
+
+after changes in docker-compose.yaml
+
+From airflow-docker folder:
+docker compose down
+docker compose up -d
+Verify inside container
+docker exec -it airflow-docker-airflow-scheduler-1 bash
+
+Then:
+
+ls -la /opt/airflow
+
+You should now see:
+
+dags
+logs
+plugins
+dbt_insurance
+
+Then:
+
+cd /opt/airflow/dbt_insurance
+ls -la
+
+Expected:
+
+dbt_project.yml
+profiles.yml
+models

@@ -1,0 +1,25 @@
+insurance_dbt:
+
+  target: dev
+
+  outputs:
+
+    dev:
+
+      type: snowflake
+
+      account: QYTYJGU-WH59583
+
+      user: SNOWDREAM
+
+      password: Tiktokvivektiwari@1234
+
+      role: ACCOUNTADMIN
+
+      warehouse: INSURANCE_WH
+
+      database: INSURANCE_DWH
+
+      schema: BRONZE
+
+      threads: 4

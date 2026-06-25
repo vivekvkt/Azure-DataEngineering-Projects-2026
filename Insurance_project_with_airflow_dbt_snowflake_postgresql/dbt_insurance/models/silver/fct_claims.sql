@@ -1,0 +1,29 @@
+SELECT
+
+    CLAIM_ID,
+    CLAIM_NUMBER,
+
+    POLICY_ID,
+    CUSTOMER_ID,
+    AGENT_ID,
+
+    CLAIM_DATE,
+    INCIDENT_DATE,
+
+    CLAIM_AMOUNT,
+    APPROVED_AMOUNT,
+
+    CLAIM_STATUS,
+    CLAIM_TYPE,
+
+    IS_FRAUDULENT,
+
+    DATEDIFF(
+        DAY,
+        INCIDENT_DATE,
+        PROCESSED_DATE
+    ) AS PROCESSING_TIME_DAYS,
+
+    CURRENT_TIMESTAMP() AS LOADED_AT
+
+FROM {{ source('bronze','claims') }}

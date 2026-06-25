@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+
+- name: bronze
+  database: INSURANCE_DWH
+  schema: BRONZE
+
+  tables:
+    - name: customers
+    - name: agents
+    - name: policies
+    - name: claims

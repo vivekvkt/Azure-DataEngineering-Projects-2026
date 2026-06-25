@@ -1,0 +1,191 @@
+1. Verify dbt Installation
+dbt --version
+
+Purpose:
+
+Check dbt Core version
+Check Snowflake adapter version
+2. Validate Connection to Snowflake
+dbt debug --profiles-dir .
+
+Purpose:
+
+Validate profiles.yml
+Validate dbt_project.yml
+Test Snowflake connection
+Verify credentials
+
+Expected Output
+
+Connection test: [OK connection ok]
+3. Validate dbt Project
+dbt parse --profiles-dir .
+
+Purpose:
+
+Parse all models
+Validate SQL syntax
+Validate source definitions
+Validate schema.yml files
+
+Expected Output
+
+Performance info: target/perf_info.json
+4. List All dbt Objects
+dbt ls --profiles-dir .
+
+Purpose:
+
+Display all models
+Display sources
+Display tests
+
+Your Output
+
+insurance_dbt.gold.agent_performance
+insurance_dbt.gold.claim_summary
+insurance_dbt.gold.fraud_analytics
+insurance_dbt.gold.revenue_kpis
+
+insurance_dbt.silver.dim_agents
+insurance_dbt.silver.dim_customers
+insurance_dbt.silver.dim_policies
+insurance_dbt.silver.fct_claims
+5. Run Only Silver Models
+dbt run --select models/silver --profiles-dir .
+
+Purpose
+Build:
+
+DIM_CUSTOMERS
+DIM_AGENTS
+DIM_POLICIES
+FCT_CLAIMS
+6. Run Only Gold Models
+dbt run --select models/gold --profiles-dir .
+
+Purpose
+Build:
+
+CLAIM_SUMMARY
+REVENUE_KPIS
+AGENT_PERFORMANCE
+FRAUD_ANALYTICS
+7. Run Single Model
+
+Example:
+
+dbt run --select revenue_kpis --profiles-dir .
+
+Purpose
+Build only one model.
+
+8. Run Entire Project
+dbt run --profiles-dir .
+
+Purpose
+Build everything:
+
+Sources
+    ↓
+Silver Models
+    ↓
+Gold Models
+9. Run Data Tests
+dbt test --profiles-dir .
+
+Purpose
+Execute:
+
+unique
+not_null
+
+checks from schema.yml.
+
+Example:
+
+not_null_dim_customers_CUSTOMER_ID
+unique_dim_customers_CUSTOMER_ID
+10. Generate dbt Documentation
+dbt docs generate --profiles-dir .
+
+Purpose
+Create:
+
+target/catalog.json
+target/manifest.json
+
+for lineage documentation.
+
+11. Start dbt Documentation Server
+dbt docs serve --profiles-dir .
+
+Purpose
+Open documentation website showing:
+
+Sources
+    ↓
+Silver Models
+    ↓
+Gold Models
+
+lineage graph.
+
+12. Build Models + Tests Together
+
+(Useful command for future)
+
+dbt build --profiles-dir .
+
+Purpose
+
+Runs:
+
+dbt run
++
+dbt test
+
+in a single command.
+
+Recommended for production.
+
+13. Clean dbt Artifacts
+
+(Useful for future)
+
+dbt clean
+
+Purpose
+
+Remove:
+
+target/
+dbt_packages/
+logs/
+14. Install dbt Packages
+
+(Useful when using packages)
+
+dbt deps
+
+Purpose
+
+Download packages from:
+
+packages.yml
+Your Current Most Important Commands
+dbt debug --profiles-dir .
+
+dbt parse --profiles-dir .
+
+dbt ls --profiles-dir .
+
+dbt run --select models/silver --profiles-dir .
+
+dbt run --select models/gold --profiles-dir .
+
+dbt test --profiles-dir .
+
+dbt docs generate --profiles-dir .
+
+dbt docs serve --profiles-dir .

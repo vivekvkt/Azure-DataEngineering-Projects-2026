@@ -1,0 +1,84 @@
+✅ STEP-BY-STEP AFTER REBUILD (IMPORTANT FLOW)
+🟢 STEP 1 — Check containers are running
+docker ps
+
+You should see:
+
+airflow-webserver
+airflow-scheduler
+airflow-worker
+postgres (if used)
+redis (if used)
+
+👉🚀 CORRECT ORDER OF RUNNING TASKS (CLI TESTING)
+
+If you want to run manually step-by-step:
+docker exec -it airflow-docker-airflow-scheduler-1 
+
+docker exec -it airflow-docker-airflow-scheduler-1 grep -n "overwrite=" /opt/airflow/dags/etl_postgres_to_snowflake.py
+🟡 STEP 1 — Extract layer
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake extract_customers 2026-06-24
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake extract_agents 2026-06-24
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake extract_policies 2026-06-24
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake extract_claims 2026-06-24
+
+🟡 STEP 2 — Load to Snowflake
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake load_customers_to_snowflake 2026-06-24
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake load_agents_to_snowflake 2026-06-24
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake load_policies_to_snowflake 2026-06-24
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake load_claims_to_snowflake 2026-06-24
+
+🟢 STEP 3 — Validate
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake validate_data_quality 2026-06-24
+
+🟢 STEP 4 — Notification
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake send_success_notification 2026-06-24
+⚠️ VERY IMPORTANT INSIGHT (your main issue)
+
+You said:
+
+Snowflake tables are still 0
+
+👉 That means:
+
+LOAD TASKS ARE NOT EXECUTING OR NOT INSERTING DATA
+
+So your next debugging should focus on:
+
+🔴 load_customers_to_snowflake
+🔴 load_agents_to_snowflake
+🔴 load_policies_to_snowflake
+🔴 load_claims_to_snowflake
+🔥 BEST PRACTICE (VERY IMPORTANT)
+
+Instead of running tasks manually, ALWAYS prefer:
+
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags trigger etl_postgres_to_snowflake
+
+and then monitor in UI.
+
+✅ Your command is correct
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags trigger etl_postgres_to_snowflake
+
+👉 This is enough to run the entire DAG end-to-end
+
+🚀 What happens when you run this?
+
+Airflow will automatically:
+
+extract_customers
+extract_agents
+extract_policies
+extract_claims
+        ↓
+load_customers_to_snowflake
+load_agents_to_snowflake
+load_policies_to_snowflake
+load_claims_to_snowflake
+        ↓
+validate_data_quality
+        ↓
+send_success_notification
+
+✔ No need to run task-by-task manually
+✔ Airflow handles order based on dependencies

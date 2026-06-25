@@ -1,0 +1,26 @@
+# Airflow
+airflow-docker/logs/
+airflow-docker/config/
+airflow-docker/plugins/__pycache__/
+
+# Python
+__pycache__/
+*.pyc
+
+# dbt
+dbt_insurance/target/
+dbt_insurance/logs/
+dbt_insurance/dbt_packages/
+
+# Environment
+.env
+venv/
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+dbt_insurance/.user.yml
+profiles.yml
+.env

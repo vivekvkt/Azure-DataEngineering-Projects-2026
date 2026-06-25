@@ -1,0 +1,43 @@
+version: 2
+
+models:
+
+  - name: dim_customers
+
+    columns:
+
+      - name: CUSTOMER_ID
+
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_agents
+
+    columns:
+
+      - name: AGENT_ID
+
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_policies
+
+    columns:
+
+      - name: POLICY_ID
+
+        tests:
+          - unique
+          - not_null
+
+  - name: fct_claims
+
+    columns:
+
+      - name: CLAIM_ID
+
+        tests:
+          - unique
+          - not_null

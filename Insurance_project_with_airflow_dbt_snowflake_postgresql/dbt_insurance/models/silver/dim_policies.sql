@@ -1,0 +1,24 @@
+SELECT
+
+    POLICY_ID,
+    CUSTOMER_ID,
+    POLICY_NUMBER,
+    POLICY_TYPE,
+
+    COVERAGE_AMOUNT,
+    PREMIUM_AMOUNT,
+
+    START_DATE,
+    END_DATE,
+
+    STATUS,
+
+    CASE
+        WHEN END_DATE >= CURRENT_DATE()
+        THEN TRUE
+        ELSE FALSE
+    END AS IS_ACTIVE,
+
+    CURRENT_TIMESTAMP() AS LOADED_AT
+
+FROM {{ source('bronze','policies') }}

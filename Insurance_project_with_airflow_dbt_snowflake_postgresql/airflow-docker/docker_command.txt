@@ -1,0 +1,415 @@
+# Airflow + Docker + Snowflake ETL Debugging Commands Cheat Sheet
+
+## 1. Docker Commands
+
+### Check Running Containers
+
+```bash
+docker ps
+```
+
+Purpose:
+
+* Verify all containers are running.
+* Check health status.
+* Confirm port mappings.
+
+Example:
+
+```text
+airflow-webserver
+airflow-scheduler
+airflow-worker
+postgres
+redis
+```
+
+---
+
+### Check All Containers (Including Stopped)
+
+```bash
+docker ps -a
+```
+
+Purpose:
+
+* Find containers that exited or crashed.
+
+---
+
+### View Container Logs
+
+```bash
+docker logs airflow-docker-airflow-webserver-1 --tail 100
+```
+
+Purpose:
+
+* Diagnose Airflow UI issues.
+* Check Gunicorn startup errors.
+* View recent logs only.
+
+---
+
+### Follow Logs Live
+
+```bash
+docker logs -f airflow-docker-airflow-webserver-1
+```
+
+Purpose:
+
+* Watch logs in real time.
+
+---
+
+### Restart Specific Container
+
+```bash
+docker restart airflow-docker-airflow-webserver-1
+```
+
+Purpose:
+
+* Reload DAG changes.
+* Restart failed service.
+
+Also used:
+
+```bash
+docker restart airflow-docker-airflow-scheduler-1
+docker restart airflow-docker-airflow-worker-1
+```
+
+---
+
+### Enter Container Shell
+
+```bash
+docker exec -it airflow-docker-airflow-webserver-1 bash
+```
+
+Purpose:
+
+* Inspect files.
+* Run Airflow commands.
+* Debug Python packages.
+
+---
+
+### Run Single Command Inside Container
+
+```bash
+docker exec -it airflow-docker-airflow-webserver-1 airflow db check
+```
+
+Purpose:
+
+* Verify Airflow metadata database connection.
+
+---
+
+### View DAG File Inside Container
+
+```bash
+docker exec -it airflow-docker-airflow-webserver-1 head -50 /opt/airflow/dags/etl_postgres_to_snowflake.py
+```
+
+Purpose:
+
+* Confirm deployed DAG version.
+
+---
+
+### Search Text Inside DAG
+
+```bash
+docker exec -it airflow-docker-airflow-webserver-1 grep -n "pd.read_json" /opt/airflow/dags/etl_postgres_to_snowflake.py
+```
+
+Purpose:
+
+* Verify code changes reached container.
+
+---
+
+### Inspect Container Mounts
+
+```bash
+docker inspect airflow-docker-airflow-webserver-1
+```
+
+docker logs airflow-docker-airflow-scheduler-1 --tail 100
+docker logs airflow-docker-airflow-worker-1 --tail 100
+docker logs airflow-docker-airflow-webserver-1 --tail 100
+
+Restart cleanly:
+docker compose down -v
+docker system prune -f
+docker compose up -d --build
+
+Restart Docker clean:
+docker compose down -v
+docker compose up -d --build
+
+docker ps
+Then trigger DAG again:
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags trigger etl_postgres_to_snowflake
+
+LIST DAGS:
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags list
+
+CHECK DAG IMPORT ERRORS:
+docker logs airflow-docker-airflow-scheduler-1 --tail 200
+
+CHECK DAG FILE INSIDE CONTAINER:
+docker exec -it airflow-docker-airflow-webserver-1 ls /opt/airflow/dags
+output-etl_postgres_to_snowflake.py
+
+Python file check:
+docker exec -it airflow-docker-airflow-webserver-1 python /opt/airflow/dags/etl_postgres_to_snowflake.py
+Python import the module:
+docker exec -it airflow-docker-airflow-webserver-1 python -c "import sys; sys.path.append('/opt/airflow/dags'); import etl_postgres_to_snowflake; print('IMPORT OK')"
+
+This command will show the exact Python error:
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags list-import-errors
+
+docker exec -it airflow-docker-airflow-webserver-1 grep -n "dag_id" /opt/airflow/dags/etl_postgres_to_snowflake.py
+
+docker exec -it airflow-docker-airflow-webserver-1 grep -n "DAG(" /opt/airflow/dags/etl_postgres_to_snowflake.py
+
+Airflow metadata/scheduler state:
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags show etl_postgres_to_snowflake
+
+verify the scheduler has registered the DAG:
+
+
+docker exec -it airflow-docker-airflow-webserver-1 airflow connections list
+
+docker exec -it airflow-docker-airflow-webserver-1 python -c "import socket; print(socket.gethostbyname('postgres'))"
+172.18.0.3
+
+inside airflow connection-
+Connection ID: postgres_insurance
+Connection Type: Postgres
+Host: postgres
+Port: 5432
+Login: postgres
+Password: postgres
+Database/Schema: postgres
+host    all             all             192.168.1.0/24          scram-sha-256
+schema = insurance_db
+usr-postgres
+passwd - postgres
+
+
+Airflow DAG Debugging Commands (Save for Future)
+1. Check running containers
+docker ps
+2. Verify DAG file exists inside container
+docker exec -it airflow-docker-airflow-webserver-1 ls -l /opt/airflow/dags
+
+Expected:
+
+etl_postgres_to_snowflake.py
+3. Check DAG import errors
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags list-import-errors
+4. List all DAGs
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags list
+
+Windows:
+
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags list
+
+Linux:
+
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags list | grep etl
+5. Verify DAG structure
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags show etl_postgres_to_snowflake
+
+Shows task dependency graph.
+
+6. Trigger DAG manually
+docker exec -it airflow-docker-airflow-webserver-1 airflow dags trigger etl_postgres_to_snowflake
+7. Test a single task
+
+Most useful command.
+
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake extract_customers 2026-06-24
+
+Other tasks:
+
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake extract_agents 2026-06-24
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake load_customers_to_snowflake 2026-06-24
+8. View Airflow connections
+docker exec -it airflow-docker-airflow-scheduler-1 airflow connections list
+9. Inspect a specific connection
+docker exec -it airflow-docker-airflow-scheduler-1 airflow connections get postgres_insurance
+
+Used to verify:
+
+Host
+Database
+User
+Port
+10. Delete a connection
+docker exec -it airflow-docker-airflow-scheduler-1 airflow connections delete postgres_insurance
+11. Create PostgreSQL connection
+docker exec -it airflow-docker-airflow-scheduler-1 airflow connections add postgres_insurance \
+--conn-type postgres \
+--conn-host 192.168.1.37 \
+--conn-login postgres \
+--conn-password postgres \
+--conn-port 5432 \
+--conn-schema postgres
+12. Open shell inside scheduler
+docker exec -it airflow-docker-airflow-scheduler-1 bash
+13. Open shell inside webserver
+docker exec -it airflow-docker-airflow-webserver-1 bash
+14. Check PostgreSQL databases
+docker exec -it airflow-docker-postgres-1 psql -U airflow
+
+Inside PostgreSQL:
+
+\l
+15. Check tables
+SELECT table_schema,
+       table_name
+FROM information_schema.tables
+WHERE table_type='BASE TABLE';
+16. Verify current database
+SELECT current_database();
+
+This command solved your issue.
+
+17. Search source code
+
+Windows:
+
+findstr /S /I "operational" *.*
+
+Linux:
+
+grep -R "operational" .
+18. Check container logs
+
+Scheduler:
+
+docker logs airflow-docker-airflow-scheduler-1
+
+Webserver:
+
+docker logs airflow-docker-airflow-webserver-1
+
+Tail logs:
+
+docker logs -f airflow-docker-airflow-scheduler-1
+Errors We Solved
+Error 1
+Dag id etl_postgres_to_snowflake not found
+
+Check:
+
+airflow dags list
+airflow dags show etl_postgres_to_snowflake
+Error 2
+The conn_id `postgres_insurance` isn't defined
+
+Fix:
+
+airflow connections add
+Error 3
+Connection refused
+
+Wrong host/IP.
+
+Check:
+
+ipconfig
+netstat -ano | findstr :5432
+Error 4
+password authentication failed
+
+Wrong username/password.
+
+Error 5
+database "insurance_db" does not exist
+
+Connection pointed to wrong database.
+
+Error 6
+relation operational.customers does not exist
+
+Airflow connected to wrong database (insurance_db) instead of (postgres).
+
+after changes script use this command so airflow can pickup the changes
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags list | findstr etl_postgres
+
+
+Verify DAG is recognized
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags list | findstr etl_postgres
+Restart Scheduler (most important)
+docker restart airflow-docker-airflow-scheduler-1
+
+Purpose:
+
+Reload DAG code changes.
+Re-parse DAG files.
+Pick up new Python code.
+Restart Webserver
+docker restart airflow-docker-airflow-webserver-1
+
+Purpose:
+
+Refresh Airflow UI.
+Reflect DAG changes in Graph/Grid view.
+Restart Worker (CeleryExecutor)
+docker restart airflow-docker-airflow-worker-1
+
+Purpose:
+
+Pick up updated task code.
+Required when using CeleryExecutor.
+Restart all Airflow services
+docker compose restart
+
+or
+
+docker compose restart airflow-webserver airflow-scheduler airflow-worker
+
+Purpose:
+
+Ensure every Airflow component uses the latest code.
+Verify updated DAG file inside container
+docker exec -it airflow-docker-airflow-scheduler-1 cat /opt/airflow/dags/etl_postgres_to_snowflake.py
+
+or search for your new debug print:
+
+docker exec -it airflow-docker-airflow-scheduler-1 grep "STEP 1" /opt/airflow/dags/etl_postgres_to_snowflake.py
+Check DAG parsing errors
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags list-import-errors
+
+Very useful after code changes.
+
+Test a specific task
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake load_customers_to_snowflake 2026-06-24
+See scheduler logs while debugging
+docker logs -f airflow-docker-airflow-scheduler-1
+For your project (Airflow + Celery + Redis)
+
+After changing etl_postgres_to_snowflake.py, my usual sequence would be:
+
+docker restart airflow-docker-airflow-scheduler-1
+
+docker restart airflow-docker-airflow-worker-1
+
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags list-import-errors
+
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake load_customers_to_snowflake 2026-06-24
+
+After code change
+Since DAG file changed:
+docker compose restart airflow-scheduler airflow-webserver airflow-worker
+docker compose restart airflow-scheduler airflow-webserver airflow-worker
+
