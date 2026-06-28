@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/vivekvkt/Azure-DataEngineering-Projects-2026/blob/main/Ecommerce-Platform-Snowflake-Analytics-Chatbot-projects/powerBIDahboard.PNG" width="900">
+  <img src="https://github.com/vivekvkt/Azure-DataEngineering-Projects-2026/blob/main/Insurance_project_with_airflow_dbt_snowflake_postgresql/architecture/flow.png" width="900">
 </p>
 
 
