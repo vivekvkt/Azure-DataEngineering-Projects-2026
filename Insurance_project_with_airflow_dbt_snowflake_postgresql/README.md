@@ -1,5 +1,5 @@
-```markdown
 # 🚀 Insurance Data Engineering Pipeline
+
 ### End-to-End Data Engineering Project using PostgreSQL, Apache Airflow, Snowflake, dbt & Power BI
 
 <p align="center">
@@ -20,9 +20,7 @@ This project follows the **Medallion Architecture (Bronze → Silver → Gold)**
 
 # 🏗️ Architecture
 
-```
-
-```
+```text
             PostgreSQL
                  │
                  ▼
@@ -32,19 +30,17 @@ This project follows the **Medallion Architecture (Bronze → Silver → Gold)**
        Snowflake Bronze Layer
                  │
                  ▼
-             dbt run
+              dbt run
                  │
       ┌──────────┴──────────┐
       ▼                     ▼
-  Silver Models        Gold Models
+ Silver Models         Gold Models
                  │
                  ▼
              dbt test
                  │
                  ▼
-             Power BI
-```
-
+              Power BI
 ```
 
 ---
@@ -52,59 +48,65 @@ This project follows the **Medallion Architecture (Bronze → Silver → Gold)**
 # 🔄 Pipeline Workflow
 
 ### Step 1
+
 Data is stored inside **PostgreSQL**.
 
 ↓
 
 ### Step 2
+
 Apache Airflow schedules and orchestrates the pipeline.
 
 ↓
 
 ### Step 3
+
 Raw data is loaded into the **Snowflake Bronze Layer**.
 
 ↓
 
 ### Step 4
+
 dbt transforms raw data into cleaned **Silver Models**.
 
 ↓
 
 ### Step 5
+
 Business-ready **Gold Models** are generated.
 
 ↓
 
 ### Step 6
+
 dbt executes automated data quality tests.
 
 ↓
 
 ### Step 7
+
 Power BI connects to Gold models for reporting and dashboards.
 
 ---
 
 # 🛠️ Technology Stack
 
-| Tool | Purpose |
-|------|----------|
-| PostgreSQL | Source Database |
+| Tool           | Purpose                |
+| -------------- | ---------------------- |
+| PostgreSQL     | Source Database        |
 | Apache Airflow | Workflow Orchestration |
-| Snowflake | Cloud Data Warehouse |
-| dbt | Data Transformation |
-| Docker | Containerization |
-| Python | ETL Development |
-| SQL | Data Transformation |
-| Power BI | Dashboard & Reporting |
+| Snowflake      | Cloud Data Warehouse   |
+| dbt            | Data Transformation    |
+| Docker         | Containerization       |
+| Python         | ETL Development        |
+| SQL            | Data Transformation    |
+| Power BI       | Dashboard & Reporting  |
 
 ---
 
 # 📂 Project Structure
 
-```
-
+```text
 Insurance_project_with_airflow_dbt_snowflake_postgresql/
 │
 ├── airflow/
@@ -114,9 +116,9 @@ Insurance_project_with_airflow_dbt_snowflake_postgresql/
 │
 ├── dbt/
 │   ├── models/
-│   │     ├── bronze/
-│   │     ├── silver/
-│   │     └── gold/
+│   │   ├── bronze/
+│   │   ├── silver/
+│   │   └── gold/
 │   ├── tests/
 │   └── dbt_project.yml
 │
@@ -128,8 +130,7 @@ Insurance_project_with_airflow_dbt_snowflake_postgresql/
 ├── sql/
 │
 └── README.md
-
-````
+```
 
 ---
 
@@ -141,7 +142,7 @@ Insurance_project_with_airflow_dbt_snowflake_postgresql/
 git clone https://github.com/vivekvkt/Azure-DataEngineering-Projects-2026.git
 
 cd Insurance_project_with_airflow_dbt_snowflake_postgresql
-````
+```
 
 ---
 
@@ -162,8 +163,6 @@ docker ps
 # 📦 Install dbt Inside Airflow Containers
 
 Since dbt is executed from Airflow tasks, install **dbt-core** and **dbt-snowflake** inside both Scheduler and Worker containers.
-
----
 
 ## Scheduler Container
 
@@ -219,15 +218,11 @@ dbt --version
 dbt debug
 ```
 
----
-
 ## Execute Models
 
 ```bash
 dbt run
 ```
-
----
 
 ## Run Data Quality Tests
 
@@ -235,15 +230,11 @@ dbt run
 dbt test
 ```
 
----
-
 ## Generate Documentation
 
 ```bash
 dbt docs generate
 ```
-
----
 
 ## Serve Documentation
 
@@ -261,23 +252,19 @@ dbt docs serve
 * No business transformations
 * Historical data preserved
 
----
-
 ## 🥈 Silver Layer
 
 * Data cleaning
 * Data standardization
-* Remove duplicates
-* Apply business rules
-
----
+* Duplicate removal
+* Business rule implementation
 
 ## 🥇 Gold Layer
 
 * Business-ready datasets
 * Reporting tables
 * KPI calculations
-* Analytics models
+* Analytics-ready models
 
 ---
 
@@ -288,7 +275,7 @@ The project validates data quality using **dbt tests**, including:
 * Not Null Tests
 * Unique Tests
 * Relationship Tests
-* Accepted Values
+* Accepted Values Tests
 * Custom Business Rules
 
 ---
@@ -307,15 +294,14 @@ Power BI connects directly to the **Gold Layer** in Snowflake to build:
 
 # 🚀 Key Features
 
-* End-to-End Data Pipeline
-* Automated Workflow using Airflow
-* Snowflake Data Warehouse
-* Medallion Architecture
+* End-to-End Data Engineering Pipeline
+* Apache Airflow Workflow Orchestration
+* Snowflake Medallion Architecture
 * dbt Transformations
-* Automated Data Testing
-* Documentation Generation
+* Automated Data Quality Testing
+* Dockerized Development Environment
 * Power BI Reporting
-* Dockerized Environment
+* Documentation Generation
 * Modular & Scalable Design
 
 ---
@@ -337,7 +323,7 @@ Power BI connects directly to the **Gold Layer** in Snowflake to build:
 * CI/CD with GitHub Actions
 * Incremental dbt Models
 * Data Freshness Tests
-* Airflow Notifications (Email/Slack)
+* Airflow Email / Slack Notifications
 * Great Expectations Integration
 * Power BI Deployment Pipeline
 * Unit Testing for ETL
@@ -349,9 +335,9 @@ Power BI connects directly to the **Gold Layer** in Snowflake to build:
 
 **Vivek Tiwari**
 
-Python Data Engineer | Azure Data Engineer
+**Python Data Engineer | Azure Data Engineer**
 
-**Skills**
+### Skills
 
 * Python
 * SQL
@@ -367,7 +353,4 @@ Python Data Engineer | Azure Data Engineer
 
 ---
 
-⭐ If you found this project useful, don't forget to **Star** the repository!
-
-```
-```
+⭐ **If you found this project useful, please consider giving it a Star on GitHub!**
