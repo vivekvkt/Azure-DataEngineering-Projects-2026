@@ -8,11 +8,11 @@ insurance_dbt:
 
       type: snowflake
 
-      account: QYTYJGU-WH59583
+      account: LFTYZKV-YC07607
 
-      user: SNOWDREAM
+      user: VivekpwtTiwari
 
-      password: Tiktokvivektiwari@1234
+      password: Viveklearning1@12345
 
       role: ACCOUNTADMIN
 

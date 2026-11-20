@@ -169,6 +169,12 @@ def load_customers_to_snowflake(**context):
     print("STEP 5: Getting Snowflake connection")
     conn = sf_hook.get_conn()
     print("STEP 6: Connected to Snowflake")
+    df.columns = df.columns.str.upper()
+
+    df["DATE_OF_BIRTH"] = pd.to_datetime(
+        df["DATE_OF_BIRTH"]
+    ).dt.strftime("%Y-%m-%d")
+
     success, nchunks, nrows, _ = write_pandas(
         conn=conn,
         df=df,
@@ -225,6 +231,11 @@ def load_agents_to_snowflake(**context):
     """)
 
     conn = sf_hook.get_conn()
+    df.columns = df.columns.str.upper()
+
+    df["HIRE_DATE"] = pd.to_datetime(
+        df["HIRE_DATE"]
+    ).dt.strftime("%Y-%m-%d")
 
     success, nchunks, nrows, _ = write_pandas(
         conn=conn,

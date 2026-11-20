@@ -195,3 +195,34 @@ FROM operational.policies;
 
 SELECT COUNT(*) AS claims_count
 FROM operational.claims;
+
+
+
+
+-- postgresql
+SELECT COUNT(*) AS customers_count
+FROM operational.customers;
+--10
+
+select * from  operational.customers;
+
+SELECT COUNT(*) AS agents_count
+FROM operational.agents;
+--10
+
+SELECT COUNT(*) AS policies_count
+FROM operational.policies;
+
+SELECT COUNT(*) AS claims_count
+FROM operational.claims;
+
+SELECT
+    current_database(),
+    current_schema(),
+    inet_server_addr(),
+    inet_server_port();
+
+
+SELECT schemaname, tablename
+FROM pg_tables
+WHERE tablename IN ('customers', 'agents', 'policies', 'claims');

@@ -43,15 +43,14 @@
 #                                Default: ''
 #
 # Feel free to modify this file to suit your needs.
----
-version: '3.8'
+
 x-airflow-common:
   &airflow-common
   # In order to add custom dependencies or upgrade provider packages you can use your extended image.
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.7.1}
-  # build: .
+  build: .
+  image: custom-airflow-dbt:2.7.1
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -120,6 +119,10 @@ services:
     command: webserver
     ports:
       - "8080:8080"
+    environment:
+      <<: *airflow-common-env
+      AIRFLOW__WEBSERVER__WORKERS: '2'
+      AIRFLOW__WEBSERVER__WEB_SERVER_WORKER_TIMEOUT: '180'
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s

@@ -1,0 +1,256 @@
+
+1. Windows PowerShell – project and folder commands
+# Navigate to project
+cd "YOUR_PROJECT_FOLDER"
+
+# Show current folder
+Get-Location
+
+# List files and folders
+Get-ChildItem
+
+# List all project files
+Get-ChildItem -Recurse -File
+
+# Find a particular file
+Get-ChildItem -Recurse -Filter "*.py"
+
+# Find text in project files
+findstr /S /I "operational" *.*
+
+# Check Python version
+python --version
+
+# Check pip version
+pip --version
+
+# Check Git version
+git --version
+
+# Check Docker version
+docker --version
+
+# Check Docker Compose version
+docker compose version
+
+
+2. Git commands
+# Clone repository (only once)
+git clone https://github.com/vivekvkt/Azure-DataEngineering-Projects-2026.git
+
+# Check current branch
+git branch
+
+# Check changed files
+git status
+
+# Pull latest changes
+git pull
+
+# Add all changes
+git add .
+
+# Commit changes
+git commit -m "Update insurance data engineering pipeline"
+
+# Push changes
+git push
+
+# View commit history
+git log --oneline
+
+3. Docker commands
+# List running containers
+docker ps
+
+# List all containers, including stopped
+docker ps -a
+
+# Check Docker Compose projects
+docker compose ls
+
+# List Docker volumes
+docker volume ls
+
+# List Docker networks
+docker network ls
+
+# Start project containers
+docker compose up -d
+
+# Start and rebuild images
+docker compose up -d --build
+
+# Stop project containers
+docker compose stop
+
+# Start stopped project containers
+docker compose start
+
+# Restart all services
+docker compose restart
+
+# Restart specific services
+docker compose restart airflow-scheduler airflow-webserver airflow-worker
+
+# Check container logs
+docker compose logs --tail 100
+
+# Follow logs
+docker compose logs -f
+
+# Stop and remove project containers
+docker compose down
+
+# Check container details
+docker inspect CONTAINER_NAME
+
+# Check Docker disk usage
+docker system df
+
+4. Docker container debugging commands
+Your earlier setup used these container names:
+- airflow-docker-airflow-webserver-1
+- airflow-docker-airflow-scheduler-1
+- airflow-docker-airflow-worker-1
+- airflow-docker-postgres-1
+
+# Webserver logs
+docker logs airflow-docker-airflow-webserver-1 --tail 100
+
+# Scheduler logs
+docker logs airflow-docker-airflow-scheduler-1 --tail 100
+
+# Worker logs
+docker logs airflow-docker-airflow-worker-1 --tail 100
+
+# Follow scheduler logs live
+docker logs -f airflow-docker-airflow-scheduler-1
+
+# Follow webserver logs live
+docker logs -f airflow-docker-airflow-webserver-1
+
+# Restart webserver
+docker restart airflow-docker-airflow-webserver-1
+
+# Restart scheduler
+docker restart airflow-docker-airflow-scheduler-1
+
+# Restart worker
+docker restart airflow-docker-airflow-worker-1
+
+# Enter webserver container
+docker exec -it airflow-docker-airflow-webserver-1 bash
+
+# Enter scheduler container
+docker exec -it airflow-docker-airflow-scheduler-1 bash
+
+# Check Airflow metadata database
+docker exec -it airflow-docker-airflow-webserver-1 airflow db check
+
+# Inspect container mounts
+docker inspect airflow-docker-airflow-webserver-1
+
+
+5. PostgreSQL commands
+A. Connect to PostgreSQL
+
+If PostgreSQL is running in your Docker Compose project:
+docker exec -it airflow-docker-postgres-1 psql -U airflow
+
+6. Airflow commands
+Previously used
+Your earlier DAG ID was etl_postgres_to_snowflake, and the DAG file was etl_postgres_to_snowflake.py
+
+# List all DAGs
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags list
+
+# Find your ETL DAG
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags list | findstr etl_postgres
+
+# Check DAG import errors
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags list-import-errors
+
+# Show DAG structure
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags show etl_postgres_to_snowflake
+
+# Check DAG runs
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags list-runs -d etl_postgres_to_snowflake
+
+# Trigger DAG manually
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags trigger etl_postgres_to_snowflake
+
+# Pause DAG
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags pause etl_postgres_to_snowflake
+
+# Unpause DAG
+docker exec -it airflow-docker-airflow-scheduler-1 airflow dags unpause etl_postgres_to_snowflake
+
+# Check Airflow version
+docker exec -it airflow-docker-airflow-scheduler-1 airflow version
+
+# Check Airflow database
+docker exec -it airflow-docker-airflow-scheduler-1 airflow db check
+
+# List Airflow tasks
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks list etl_postgres_to_snowflake
+
+A. Test individual tasks
+
+Your earlier notes included these task name
+
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake extract_customers 2026-06-24
+
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake extract_agents 2026-06-24
+
+docker exec -it airflow-docker-airflow-scheduler-1 airflow tasks test etl_postgres_to_snowflake load_customers_to_snowflake 2026-06-24
+
+
+B. Check DAG file
+
+# Check DAG folder
+docker exec -it airflow-docker-airflow-scheduler-1 ls -l /opt/airflow/dags
+
+# Read DAG file
+docker exec -it airflow-docker-airflow-scheduler-1 cat /opt/airflow/dags/etl_postgres_to_snowflake.py
+
+# Read first 50 lines
+docker exec -it airflow-docker-airflow-scheduler-1 head -50 /opt/airflow/dags/etl_postgres_to_snowflake.py
+
+# Search DAG ID
+docker exec -it airflow-docker-airflow-scheduler-1 grep -n "dag_id" /opt/airflow/dags/etl_postgres_to_snowflake.py
+
+# Search DAG definition
+docker exec -it airflow-docker-airflow-scheduler-1 grep -n "DAG(" /opt/airflow/dags/etl_postgres_to_snowflake.py
+
+# Test Python file
+docker exec -it airflow-docker-airflow-scheduler-1 python /opt/airflow/dags/etl_postgres_to_snowflake.py
+
+# Test Python import
+docker exec -it airflow-docker-airflow-scheduler-1 python -c "import sys; sys.path.append('/opt/airflow/dags'); import etl_postgres_to_snowflake; print('IMPORT OK')"
+
+7. Airflow connection commands
+# List all connections
+docker exec -it airflow-docker-airflow-scheduler-1 airflow connections list
+
+# Inspect PostgreSQL connection
+docker exec -it airflow-docker-airflow-scheduler-1 airflow connections get postgres_insurance
+
+# Create PostgreSQL connection
+docker exec -it airflow-docker-airflow-scheduler-1 airflow connections add postgres_insurance --conn-type postgres --conn-host postgres --conn-login postgres --conn-password YOUR_PASSWORD --conn-port 5432 --conn-schema postgres
+
+# Delete a connection (only if you really intend to recreate it)
+docker exec -it airflow-docker-airflow-scheduler-1 airflow connections delete postgres_insurance
+
+# Check whether Docker can resolve PostgreSQL hostname
+docker exec -it airflow-docker-airflow-scheduler-1 python -c "import socket; print(socket.gethostbyname('postgres'))"
+
+docker exec -it airflow-docker-airflow-scheduler-1 airflow connections list
+
+
+
+docker compose up -d --build (only when dag file updated)
+docker compose ps
+docker compose logs --tail=100 airflow-webserver
+docker compose logs --tail=50 airflow-scheduler
+docker compose ps
