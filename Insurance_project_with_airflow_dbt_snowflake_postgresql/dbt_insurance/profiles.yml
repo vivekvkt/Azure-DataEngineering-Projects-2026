@@ -8,11 +8,11 @@ insurance_dbt:
 
       type: snowflake
 
-      account: LFTYZKV-YC07607
+      account: ''
 
       user: VivekpwtTiwari
 
-      password: Viveklearning1@12345
+      password: ''
 
       role: ACCOUNTADMIN
 
