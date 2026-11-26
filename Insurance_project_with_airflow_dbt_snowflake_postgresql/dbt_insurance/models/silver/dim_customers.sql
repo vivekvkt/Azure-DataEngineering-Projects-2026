@@ -1,35 +1,25 @@
 SELECT
+    CUSTOMER_ID,
 
-    "customer_id" AS CUSTOMER_ID,
+    CONCAT(FIRST_NAME, ' ', LAST_NAME) AS FULL_NAME,
 
-    CONCAT(
-        "first_name",
-        ' ',
-        "last_name"
-    ) AS FULL_NAME,
+    EMAIL,
+    PHONE,
 
-    "email" AS EMAIL,
-    "phone" AS PHONE,
+    DATE_OF_BIRTH,
+    GENDER,
+    CITY,
+    STATE,
+    ZIP_CODE,
 
-    TO_DATE(
-        TO_TIMESTAMP_NTZ("date_of_birth" / 1000)
-    ) AS DATE_OF_BIRTH,
-
-    "gender" AS GENDER,
-    "city" AS CITY,
-    "state" AS STATE,
-    "zip_code" AS ZIP_CODE,
-
-    TO_DATE(
-        TO_TIMESTAMP_NTZ("registration_date" / 1000)
-    ) AS REGISTRATION_DATE,
+    CREATED_AT::DATE AS REGISTRATION_DATE,
 
     DATEDIFF(
         YEAR,
-        TO_DATE(TO_TIMESTAMP_NTZ("date_of_birth" / 1000)),
+        DATE_OF_BIRTH,
         CURRENT_DATE()
     ) AS AGE,
 
     CURRENT_TIMESTAMP() AS LOADED_AT
 
-FROM {{ source('bronze','customers') }}
+FROM {{ source('bronze', 'customers') }}

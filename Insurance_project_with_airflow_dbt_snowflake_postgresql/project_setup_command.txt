@@ -247,10 +247,362 @@ docker exec -it airflow-docker-airflow-scheduler-1 python -c "import socket; pri
 
 docker exec -it airflow-docker-airflow-scheduler-1 airflow connections list
 
-
+###### docker command command ################
 
 docker compose up -d --build (only when dag file updated)
 docker compose ps
 docker compose logs --tail=100 airflow-webserver
 docker compose logs --tail=50 airflow-scheduler
 docker compose ps
+docker compose restart airflow-scheduler
+
+#########################################################
+
+# Airflow Log Retrieval Issue – Troubleshooting Summary
+
+## Issue
+Airflow DAG tasks were executing successfully, but task logs could not be opened from the Airflow UI.
+
+**Error:**
+```text
+*** Could not read served logs:
+Request URL is missing an 'http://' or 'https://' protocol.
+```
+
+## Environment
+- Airflow Version: 2.7.1
+- Executor: CeleryExecutor
+- PostgreSQL: Source Database
+- Redis: Celery Broker
+- Snowflake: Target Data Warehouse
+- Docker Compose Deployment
+
+## Investigation Steps
+
+### Verify Running Containers
+```bash
+docker ps
+docker ps -a
+```
+
+### Check Airflow Base URL
+```bash
+docker exec -it airflow-docker-airflow-webserver-1 airflow config get-value webserver base_url
+```
+
+Output:
+```text
+http://localhost:8080
+```
+
+### Check Remote Logging
+```bash
+docker exec -it airflow-docker-airflow-webserver-1 airflow config get-value logging remote_logging
+```
+
+Output:
+```text
+False
+```
+
+### Check Worker Log Server Port
+```bash
+docker exec -it airflow-docker-airflow-webserver-1 airflow config get-value celery worker_log_server_port
+```
+
+Output:
+```text
+8793
+```
+
+### Check Worker Hostname
+```bash
+docker exec -it airflow-docker-airflow-worker-1 hostname
+```
+
+### Verify Executor Type
+```bash
+docker exec -it airflow-docker-airflow-webserver-1 airflow config get-value core executor
+```
+
+Output:
+```text
+CeleryExecutor
+```
+
+### Review Webserver Logs
+```bash
+docker logs airflow-docker-airflow-webserver-1 --tail 100
+```
+
+## Fix Applied
+
+Added the following environment variables to `docker-compose.yml`:
+
+```yaml
+environment:
+  AIRFLOW__WEBSERVER__BASE_URL: http://localhost:8080
+  AIRFLOW__LOGGING__WORKER_LOG_SERVER_PORT: 8793
+```
+
+## Restart Airflow Services
+
+```bash
+docker compose down
+docker compose up -d --force-recreate
+```
+
+## Result
+
+✅ Airflow Webserver Healthy  
+✅ Scheduler Healthy  
+✅ Celery Worker Healthy  
+✅ DAG Tasks Executing Successfully  
+✅ PostgreSQL → Snowflake Data Load Working  
+✅ Data Quality Validation Running  
+✅ Success Notifications Running  
+✅ Task Logs Accessible from Airflow UI  
+✅ All Pipeline Stages Showing Green Status
+
+## Project Status
+
+```text
+PostgreSQL
+     │
+     ▼
+ Airflow ETL
+     │
+     ▼
+ Snowflake RAW Layer
+     │
+     ▼
+ Data Quality Validation
+     │
+     ▼
+ Success Notification
+```
+
+**Issue Resolved Successfully.**
+
+
+# ENTER IN Airflow bash
+docker exec -it airflow-docker-airflow-scheduler-1 bash
+pip install dbt-snowflake
+dbt --version
+
+cd /opt/airflow/dbt_insurance
+ls -la
+dbt --version
+
+#Test your connection
+dbt debug --profiles-dir /opt/airflow/.dbt
+
+# inside airflow container bash
+mkdir -p /opt/airflow/.dbt
+
+cat > /opt/airflow/.dbt/profiles.yml <<'EOF'
+insurance_project:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: LFTYZKV-YC07607
+      user: VivekpwtTiwari
+      password: "{{ env_var('DBT_PASSWORD') }}"
+      role: ACCOUNTADMIN
+      warehouse: INSURANCE_WH
+      database: INSURANCE_DWH
+      schema: BRONZE
+      threads: 4
+EOF
+
+
+export DBT_PASSWORD=''  # snowflake password linux mode
+$env:DBT_PASSWORD=''  # snowflake password windos mode
+# Verify the variable without displaying the password
+if [ -n "$DBT_PASSWORD" ]; then echo "DBT_PASSWORD is set"; else echo "DBT_PASSWORD is missing"; fi
+#Run dbt debug
+dbt debug --profiles-dir /opt/airflow/.dbt
+dbt debug --profiles-dir /opt/airflow/dbt_insurance
+
+## Now let's execute your first dbt model 
+cd /opt/airflow/dbt_insurance
+ls -R models
+dbt run --profiles-dir /opt/airflow/dbt_insurance
+After successful execution:
+dbt test --profiles-dir /opt/airflow/dbt_insurance
+
+
+### repair Docker Engine
+#Restart WSL2
+wsl --shutdown
+wsl --update
+
+## after updated dbt model sql need to compile dbt project first
+## Compile your dbt project
+dbt debug --profiles-dir /opt/airflow/dbt_insurance
+dbt compile --profiles-dir /opt/airflow/dbt_insurance
+dbt run --profiles-dir /opt/airflow/dbt_insurance
+dbt test --profiles-dir /opt/airflow/dbt_insurance
+
+## after successful 
+# Step 1: Run all models again
+dbt run --profiles-dir /opt/airflow/dbt_insurance
+## Verify Gold tables in Snowflake
+SELECT * FROM INSURANCE_DWH.BRONZE_GOLD.REVENUE_KPIS;
+
+SELECT * FROM INSURANCE_DWH.BRONZE_GOLD.AGENT_PERFORMANCE;
+
+SELECT * FROM INSURANCE_DWH.BRONZE_GOLD.CLAIM_SUMMARY;
+
+SELECT * FROM INSURANCE_DWH.BRONZE_GOLD.FRAUD_ANALYTICS;
+
+
+#########################################################
+
+
+-- snowflake bronze
+
+SELECT COUNT(*) FROM BRONZE.CUSTOMERS;
+
+SELECT COUNT(*) FROM BRONZE.AGENTS;
+
+SELECT COUNT(*) FROM BRONZE.POLICIES;
+
+SELECT COUNT(*) FROM BRONZE.CLAIMS;
+
+
+DESCRIBE TABLE INSURANCE_DWH.BRONZE.CUSTOMERS;
+
+DESCRIBE TABLE INSURANCE_DWH.BRONZE.AGENTS;
+
+DESCRIBE TABLE INSURANCE_DWH.BRONZE.POLICIES;
+
+DESCRIBE TABLE INSURANCE_DWH.BRONZE.CLAIMS;
+
+## Verify silver tables in Snowflake
+SELECT * FROM INSURANCE_DWH.SILVER.DIM_AGENTS da ;
+
+SELECT * FROM INSURANCE_DWH.SILVER.DIM_CUSTOMERS dc  ;
+
+SELECT * FROM INSURANCE_DWH.SILVER.DIM_POLICIES dp  ;
+
+SELECT * FROM INSURANCE_DWH.SILVER.FCT_CLAIMS fc  ;
+
+
+## Verify Gold tables in Snowflake
+SELECT * FROM INSURANCE_DWH.GOLD.REVENUE_KPIS;
+
+SELECT * FROM INSURANCE_DWH.GOLD.AGENT_PERFORMANCE;
+
+SELECT * FROM INSURANCE_DWH.GOLD.CLAIM_SUMMARY;
+
+SELECT * FROM INSURANCE_DWH.GOLD.FRAUD_ANALYTICS;
+
+##############################################################
+
+##### Complete dbt Commands Cheat Sheet ##################
+
+enter your Airflow scheduler container:
+docker compose exec airflow-scheduler bash
+Navigate to your dbt project:
+cd /opt/airflow/dbt_insurance
+
+1. All dbt commands in one documented list
+No.	Command	Description
+1	dbt --version	Display dbt and adapter versions
+2	dbt --help	Display available dbt commands
+3	dbt debug	Validate dbt configuration and database connection
+4	dbt parse	Parse project files and validate configuration
+5	dbt deps	Install packages from packages.yml
+6	dbt clean	Remove configured clean directories
+7	dbt init	Initialize a new dbt project
+8	dbt run	Execute all selected models
+9	dbt compile	Compile models into executable SQL
+10	dbt test	Execute data quality tests
+11	dbt build	Build selected resources and run associated tests
+12	dbt snapshot	Capture historical data changes
+13	dbt seed	Load CSV files into the database
+14	dbt docs generate	Generate project documentation
+15	dbt docs serve	Start the documentation web server
+16	dbt ls	List project resources
+17	dbt show	Execute and display a model or SQL query result
+18	dbt source freshness	Check source data freshness
+19	dbt retry	Retry eligible failed nodes from a previous invocation
+20	dbt run-operation	Execute a macro from the command line
+
+2. Model selection commands
+Command	Description
+dbt run --select DIM_CUSTOMERS	Run one model
+dbt run --select silver	Run Silver models
+dbt run --select gold	Run Gold models
+dbt run --select +DIM_CUSTOMERS	Run model and upstream dependencies
+dbt run --select DIM_CUSTOMERS+	Run model and downstream dependencies
+dbt run --select +DIM_CUSTOMERS+	Run model and both upstream/downstream dependencies
+dbt run --exclude DIM_CUSTOMERS	Exclude a model
+dbt run --full-refresh	Rebuild incremental models from scratch
+dbt run --select tag:daily	Run models with the daily tag
+
+3. Testing commands
+Command	Description
+dbt test	Run all selected tests
+dbt test --select DIM_CUSTOMERS	Test one model
+dbt test --select silver	Test Silver models
+dbt test --select source:*	Test source tests
+dbt test --select test_type:generic	Run generic tests
+dbt test --select test_type:singular	Run singular SQL tests
+
+4. Snapshot commands
+Command	Description
+dbt snapshot	Execute all snapshots
+dbt snapshot --select customers_snapshot	Execute customer snapshot
+dbt snapshot --select policies_snapshot	Execute policy snapshot
+dbt ls --resource-type snapshot	List configured snapshots
+
+5. Seeds, macros and documentation
+Command	Description
+dbt seed	Load all CSV seeds
+dbt seed --select insurance_reference_data	Load a specific seed
+dbt run-operation generate_schema_name	Execute a macro named generate_schema_name
+dbt docs generate	Generate dbt documentation
+dbt docs serve --host 0.0.0.0 --port 8081	Serve documentation on port 8081
+dbt ls --resource-type model	List models
+dbt ls --resource-type source	List sources
+dbt ls --resource-type test	List tests
+dbt ls --resource-type macro	List macros
+
+6. Debugging and logging
+Command	Description
+dbt debug --debug	Detailed configuration debugging
+dbt run --debug	Run models with debug logging
+dbt test --debug	Run tests with debug logging
+dbt --log-level debug run	Enable debug log level
+dbt compile --select DIM_CUSTOMERS	Compile a specific model
+dbt show --select DIM_CUSTOMERS	Inspect model output
+
+7. Complete workflow for your Insurance project
+Execute in this order when the Bronze data has been loaded successfully.
+# 1. Validate dbt configuration
+dbt debug
+
+# 2. Parse project
+dbt parse
+
+# 3. Install project dependencies
+dbt deps
+
+# 4. Run snapshots (once snapshot files exist)
+dbt snapshot
+
+# 5. Run Silver and Gold transformations
+dbt run
+
+# 6. Run data quality tests
+dbt test
+
+# 7. Generate documentation
+dbt docs generate
+
+docker compose exec airflow-scheduler bash -c "cd /opt/airflow/dbt_insurance && dbt docs serve --host 0.0.0.0 --port 8081"
+Your local dbt documentation
+http://localhost:8081

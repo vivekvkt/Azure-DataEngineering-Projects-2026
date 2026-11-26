@@ -157,15 +157,14 @@ def load_customers_to_snowflake(**context):
 
     print("STEP 4D: TRUNCATE")
 
-    sf_hook.run("TRUNCATE TABLE CUSTOMERS")
+    sf_hook.run("TRUNCATE TABLE INSURANCE_DWH.BRONZE.CUSTOMERS")
 
     print("STEP 4E: TRUNCATE completed")
-    sf_hook.run("""
-        USE WAREHOUSE INSURANCE_WH;
-        USE DATABASE INSURANCE_DWH;
-        USE SCHEMA BRONZE;
-        TRUNCATE TABLE CUSTOMERS;
-    """)
+    # sf_hook.run("""
+    #     USE WAREHOUSE INSURANCE_WH;
+    #     USE DATABASE INSURANCE_DWH;
+    #     USE SCHEMA BRONZE;
+    # """)
     print("STEP 5: Getting Snowflake connection")
     conn = sf_hook.get_conn()
     print("STEP 6: Connected to Snowflake")
@@ -352,18 +351,36 @@ def load_claims_to_snowflake(**context):
     # print(df.dtypes)
 
 
+    # sf_hook = SnowflakeHook(
+    #     snowflake_conn_id=SNOWFLAKE_CONN_ID
+    # )
+
+    # sf_hook.run("""
+    #     USE WAREHOUSE INSURANCE_WH;
+    #     USE DATABASE INSURANCE_DWH;
+    #     USE SCHEMA BRONZE;
+    #     TRUNCATE TABLE CLAIMS;
+    # """)
+
+    # conn = sf_hook.get_conn()
+
+    print("STEP 1: Creating Snowflake Hook")
+
     sf_hook = SnowflakeHook(
         snowflake_conn_id=SNOWFLAKE_CONN_ID
     )
 
-    sf_hook.run("""
-        USE WAREHOUSE INSURANCE_WH;
-        USE DATABASE INSURANCE_DWH;
-        USE SCHEMA BRONZE;
-        TRUNCATE TABLE CLAIMS;
-    """)
+    print("STEP 2: Truncating CLAIMS table")
+
+    sf_hook.run(
+        "TRUNCATE TABLE INSURANCE_DWH.BRONZE.CLAIMS"
+    )
+
+    print("STEP 3: Getting Snowflake connection")
 
     conn = sf_hook.get_conn()
+
+    print("STEP 4: Connected to Snowflake")
 
     # Convert date columns safely
     for col in [

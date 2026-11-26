@@ -1,29 +1,30 @@
 SELECT
+    C.CLAIM_ID,
 
-    CLAIM_ID,
-    CLAIM_NUMBER,
+    C.POLICY_ID,
+    C.CUSTOMER_ID,
+    P.AGENT_ID,
 
-    POLICY_ID,
-    CUSTOMER_ID,
-    AGENT_ID,
+    C.CLAIM_DATE,
+    C.INCIDENT_DATE,
+    C.PROCESSED_DATE,
 
-    CLAIM_DATE,
-    INCIDENT_DATE,
+    C.CLAIM_AMOUNT,
+    C.APPROVED_AMOUNT,
 
-    CLAIM_AMOUNT,
-    APPROVED_AMOUNT,
+    C.CLAIM_STATUS,
 
-    CLAIM_STATUS,
-    CLAIM_TYPE,
-
-    IS_FRAUDULENT,
+    C.FRAUD_FLAG AS IS_FRAUDULENT,
 
     DATEDIFF(
         DAY,
-        INCIDENT_DATE,
-        PROCESSED_DATE
+        C.INCIDENT_DATE,
+        C.PROCESSED_DATE
     ) AS PROCESSING_TIME_DAYS,
 
     CURRENT_TIMESTAMP() AS LOADED_AT
 
-FROM {{ source('bronze','claims') }}
+FROM {{ source('bronze', 'claims') }} C
+
+LEFT JOIN {{ source('bronze', 'policies') }} P
+    ON C.POLICY_ID = P.POLICY_ID

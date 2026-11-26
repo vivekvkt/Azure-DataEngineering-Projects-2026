@@ -8,11 +8,11 @@ insurance_dbt:
 
       type: snowflake
 
-      account: ''
+      account: LFTYZKV-YC07607
 
       user: VivekpwtTiwari
 
-      password: ''
+      password: "{{ env_var('DBT_PASSWORD') }}"
 
       role: ACCOUNTADMIN
 

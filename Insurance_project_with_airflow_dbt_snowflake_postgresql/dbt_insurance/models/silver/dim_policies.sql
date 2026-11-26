@@ -1,7 +1,7 @@
 SELECT
-
     POLICY_ID,
     CUSTOMER_ID,
+    AGENT_ID,
     POLICY_NUMBER,
     POLICY_TYPE,
 
@@ -11,14 +11,15 @@ SELECT
     START_DATE,
     END_DATE,
 
-    STATUS,
+    POLICY_STATUS AS STATUS,
 
     CASE
         WHEN END_DATE >= CURRENT_DATE()
+             AND POLICY_STATUS = 'ACTIVE'
         THEN TRUE
         ELSE FALSE
     END AS IS_ACTIVE,
 
     CURRENT_TIMESTAMP() AS LOADED_AT
 
-FROM {{ source('bronze','policies') }}
+FROM {{ source('bronze', 'policies') }}
