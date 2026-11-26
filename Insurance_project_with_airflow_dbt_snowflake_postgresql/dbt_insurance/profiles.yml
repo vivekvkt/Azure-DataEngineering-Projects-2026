@@ -1,25 +1,14 @@
 insurance_dbt:
-
   target: dev
 
   outputs:
-
     dev:
-
       type: snowflake
-
-      account: LFTYZKV-YC07607
-
-      user: VivekpwtTiwari
-
-      password: "{{ env_var('DBT_PASSWORD') }}"
-
-      role: ACCOUNTADMIN
-
-      warehouse: INSURANCE_WH
-
-      database: INSURANCE_DWH
-
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
       schema: BRONZE
-
       threads: 4

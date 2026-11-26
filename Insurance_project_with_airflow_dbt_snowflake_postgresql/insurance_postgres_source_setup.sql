@@ -119,6 +119,30 @@ VALUES
 ('William','Jackson','Male','1981-12-05','william@email.com','9876543218','73 Maple Road','Atlanta','GA','30301'),
 ('Mia','White','Female','1995-02-14','mia@email.com','9876543219','28 Pine Street','Houston','TX','77001');
 
+
+INSERT INTO operational.customers
+(first_name,last_name,gender,date_of_birth,email,phone,address,city,state,zip_code)
+VALUES
+('Ethan','Harris','Male','1986-04-12','ethan.harris@email.com','9876543221','101 Elm Street','San Diego','CA','92101'),
+('Charlotte','Martin','Female','1991-06-15','charlotte.m@email.com','9876543222','202 Cedar Road','Portland','OR','97201'),
+('Benjamin','Clark','Male','1984-09-28','ben.clark@email.com','9876543223','303 Birch Avenue','Nashville','TN','37201'),
+('Amelia','Lewis','Female','1993-01-19','amelia.lewis@email.com','9876543224','404 Willow Drive','Las Vegas','NV','89101'),
+('Lucas','Walker','Male','1988-07-23','lucas.walker@email.com','9876543225','505 Aspen Lane','Austin','TX','73301'),
+('Harper','Hall','Female','1995-03-05','harper.hall@email.com','9876543226','606 Cherry Street','Orlando','FL','32801'),
+('Alexander','Allen','Male','1982-11-11','alex.allen@email.com','9876543227','707 Spruce Court','Detroit','MI','48201'),
+('Evelyn','Young','Female','1994-08-17','evelyn.young@email.com','9876543228','808 Walnut Road','Columbus','OH','43004'),
+('Daniel','King','Male','1987-02-26','daniel.king@email.com','9876543229','909 Magnolia Ave','Kansas City','MO','64101'),
+('Abigail','Scott','Female','1992-12-30','abigail.scott@email.com','9876543230','111 Park View','Raleigh','NC','27601'),
+('Matthew','Green','Male','1985-05-09','matthew.green@email.com','9876543231','112 River Road','Salt Lake City','UT','84101'),
+('Ella','Baker','Female','1990-10-20','ella.baker@email.com','9876543232','113 Forest Lane','Minneapolis','MN','55401'),
+('Joseph','Adams','Male','1989-03-14','joseph.adams@email.com','9876543233','114 Sunrise Blvd','Tampa','FL','33601'),
+('Scarlett','Nelson','Female','1996-01-25','scarlett.nelson@email.com','9876543234','115 Sunset Avenue','Charlotte','NC','28201'),
+('Samuel','Carter','Male','1983-08-08','samuel.carter@email.com','9876543235','116 Highland Road','Indianapolis','IN','46201'),
+('Grace','Mitchell','Female','1991-09-13','grace.mitchell@email.com','9876543236','117 Brook Street','St. Louis','MO','63101'),
+('Henry','Perez','Male','1986-06-22','henry.perez@email.com','9876543237','118 Valley Drive','Cincinnati','OH','45201'),
+('Chloe','Roberts','Female','1993-04-07','chloe.roberts@email.com','9876543238','119 Ocean View','Jacksonville','FL','32099'),
+('Sebastian','Turner','Male','1987-12-18','sebastian.turner@email.com','9876543239','120 Mountain Road','Albuquerque','NM','87101'),
+('Lily','Phillips','Female','1994-11-02','lily.phillips@email.com','9876543240','121 Lake Shore','Milwaukee','WI','53201');
 -- =========================================================
 -- INSERT AGENTS
 -- =========================================================

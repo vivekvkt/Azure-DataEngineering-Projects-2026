@@ -507,6 +507,9 @@ enter your Airflow scheduler container:
 docker compose exec airflow-scheduler bash
 Navigate to your dbt project:
 cd /opt/airflow/dbt_insurance
+dbt run
+dbt test
+dbt ls
 
 1. All dbt commands in one documented list
 No.	Command	Description
@@ -603,6 +606,6 @@ dbt test
 # 7. Generate documentation
 dbt docs generate
 
-docker compose exec airflow-scheduler bash -c "cd /opt/airflow/dbt_insurance && dbt docs serve --host 0.0.0.0 --port 8081"
+docker compose exec airflow-scheduler bash -c "cd /opt/airflow/dbt_insurance && dbt docs serve --host 0.0.0.0 --port 8085"
 Your local dbt documentation
 http://localhost:8081
